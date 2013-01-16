@@ -1,17 +1,13 @@
 _ = require 'lodash'
 
-class Order
-  constructor: (@books=[]) ->
-
-  biggestLot: ->
-    _.uniq(@books)
+harry =
+  biggestLot: (books)->
+    _.uniq books
 
   reduction: (lot) ->
-    [1, 0.95][lot.length - 1]
+    [0, 1, 0.95, 0.9, 0.8, 0.75][lot.length]
 
-  total: ->
-    return 0 if @books.length == 0
-    @biggestLot().length * 8 * @reduction(@biggestLot())
+  total: (books=[]) ->
+    harry.biggestLot(books).length * 8 * harry.reduction(harry.biggestLot(books))
 
-
-module.exports = Order
+module.exports = harry

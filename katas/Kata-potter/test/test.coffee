@@ -1,26 +1,25 @@
-Order = require('../app/order')
+harry = require('../app/order')
+total = harry.total
 should = require 'should'
 
-it 'Order is a function', ->
-  Order.should.be.a 'function'
+check = (books, size, reduction, price)->
+  it "#{books} biggest lot is size #{size}", ->
+    harry.biggestLot(books).length.should.eql size
 
-describe 'Order', ->
-  beforeEach ->
-    @order = new Order()
+  it "#{books} reduction is #{reduction}", ->
+    harry.reduction(books).should.eql reduction
 
-  it 'Order can have books as initialize', ->
-    @order.total().should.eql 0
+  it "#{books} price is #{price}", ->
+    total(books).should.eql price
 
-  describe 'with one book', ->
-    beforeEach ->
-      @order.books = [0]
+it 'total is a function', ->
+  total.should.be.a 'function'
 
-    it 'have a price', ->
-      @order.total().should.eql 8
-
-    describe 'with two different book', ->
-      beforeEach ->
-        @order.books.push 1
-
-      it 'have a price with a reduction', ->
-        @order.total().should.eql (2 * 8 * 0.95)
+describe 'cart', ->
+  
+  check [],              0, 0, 0
+  check [0],             1, 1, 8
+  check [0, 1],          2, 0.95, 2 * 8 * 0.95
+  check [0, 1, 2],       3, 0.9 , 3 * 8 * 0.9
+  check [0, 1, 2, 3],    4, 0.8 , 4 * 8 * 0.8
+  check [0, 1, 2, 3, 4], 5, 0.75, 5 * 8 * 0.75
