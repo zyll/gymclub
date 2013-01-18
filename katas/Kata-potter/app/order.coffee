@@ -1,23 +1,38 @@
 _ = require 'lodash'
 
-harry =
-  biggestLot: (books)->
-    _.uniq books
+biggestLot = (books)->
+  _.uniq books
 
-  reduction: (lot) ->
-    [0, 1, 0.95, 0.9, 0.8, 0.75][lot.length]
+reduction = (lot) ->
+  [0, 1, 0.95, 0.9, 0.8, 0.75][lot.length]
 
-  total: (books=[]) ->
-    big = harry.biggestLot(books)
-    if big.length is books.length
-      harry.reduction(books) * books.length * 8
+total = (books=[]) ->
+
+  # regroup
+  ordered = _.clone(books).sort()
+
+  lots = []
+  # dispatch each books in a lot
+  while ordered.length > 0
+    book = ordered.pop()
+   
+    lot = 0
+    # is there a lot where book isnt yet? 
+    while lot < lots.length and book in lots[lot]
+      # not find may be pos is the next one
+      lot++
+    
+    # no lot accept our book, create a new lot
+    if lot is lots.length
+      lots.push [book]
     else
-      harry.total(harry.removeLot books, big) + harry.total(big)
+      lots[lot].push book
 
-  removeLot: (from, lot)->
-    cleaned = _.clone from
-    for book in lot
-      cleaned.splice (_.indexOf cleaned, book), 1
-    cleaned
+  # compute pricing
+  total = 0
+  for lot in lots
+    total += 8 * lot.length * reduction lot
+  console.log lots
+  total
 
-module.exports = harry
+module.exports = total
